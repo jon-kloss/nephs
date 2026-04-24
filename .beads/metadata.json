@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "nephs",
+  "project_id": "c41a9766-5f1c-4cf0-8c67-c3648404aaab"
+}
