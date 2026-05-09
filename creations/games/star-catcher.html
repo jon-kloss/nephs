@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Star Catcher</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+  <style>
+    body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+  </style>
+</head>
+<body>
+<script>
+class TitleScene extends Phaser.Scene {
+  constructor() { super('TitleScene'); }
+  create() {
+    this.cameras.main.setBackgroundColor('#1a1a2e');
+    this.add.text(400, 200, 'Star Catcher', { fontSize: '48px', fill: '#ffd700', fontFamily: 'Arial' }).setOrigin(0.5);
+    this.add.text(400, 300, 'Arrow keys to move\nCatch the falling stars!', { fontSize: '20px', fill: '#ffffff', fontFamily: 'Arial', align: 'center' }).setOrigin(0.5);
+    this.add.text(400, 420, 'Press SPACE to Start', { fontSize: '24px', fill: '#00ff88', fontFamily: 'Arial' }).setOrigin(0.5);
+    this.input.keyboard.once('keydown-SPACE', () => this.scene.start('GameScene'));
+  }
+}
+
+class GameScene extends Phaser.Scene {
+  constructor() { super('GameScene'); }
+  create() {
+    this.cameras.main.setBackgroundColor('#1a1a2e');
+    this.score = 0;
+    this.misses = 0;
+    this.maxMisses = 5;
+
+    // Player bucket
+    this.player = this.add.rectangle(400, 560, 80, 20, 0x00ff88);
+    this.physics.add.existing(this.player);
+    this.player.body.setCollideWorldBounds(true);
+    this.player.body.setImmovable(true);
+
+    // Stars group
+    this.stars = this.physics.add.group();
+
+    // Score and misses text
+    this.scoreText = this.add.text(16, 16, 'Stars: 0', { fontSize: '20px', fill: '#ffd700', fontFamily: 'Arial' });
+    this.missText = this.add.text(16, 44, 'Misses: 0 / 5', { fontSize: '20px', fill: '#ff6b6b', fontFamily: 'Arial' });
+
+    // Spawn timer
+    this.spawnTimer = this.time.addEvent({
+      delay: 800,
+      callback: this.spawnStar,
+      callbackScope: this,
+      loop: true
+    });
+
+    // Overlap detection
+    this.physics.add.overlap(this.player, this.stars, this.catchStar, null, this);
+
+    // Controls
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  spawnStar() {
+    const x = Phaser.Math.Between(40, 760);
+    const size = Phaser.Math.Between(8, 16);
+    const star = this.add.star(x, -20, 5, size / 2, size, 0xffd700);
+    this.physics.add.existing(star);
+    star.body.setVelocityY(Phaser.Math.Between(120, 250));
+    star.body.setAllowGravity(false);
+    this.stars.add(star);
+  }
+
+  catchStar(player, star) {
+    star.destroy();
+    this.score++;
+    this.scoreText.setText('Stars: ' + this.score);
+
+    // Speed up spawning every 10 stars
+    if (this.score % 10 === 0) {
+      const newDelay = Math.max(300, this.spawnTimer.delay - 100);
+      this.spawnTimer.remove();
+      this.spawnTimer = this.time.addEvent({
+        delay: newDelay,
+        callback: this.spawnStar,
+        callbackScope: this,
+        loop: true
+      });
+    }
+  }
+
+  update() {
+    // Player movement
+    if (this.cursors.left.isDown) {
+      this.player.body.setVelocityX(-400);
+    } else if (this.cursors.right.isDown) {
+      this.player.body.setVelocityX(400);
+    } else {
+      this.player.body.setVelocityX(0);
+    }
+
+    // Check for missed stars
+    this.stars.getChildren().forEach(star => {
+      if (star.y > 620) {
+        star.destroy();
+        this.misses++;
+        this.missText.setText('Misses: ' + this.misses + ' / ' + this.maxMisses);
+        if (this.misses >= this.maxMisses) {
+          this.scene.start('GameOverScene', { score: this.score });
+        }
+      }
+    });
+  }
+}
+
+class GameOverScene extends Phaser.Scene {
+  constructor() { super('GameOverScene'); }
+  create(data) {
+    this.cameras.main.setBackgroundColor('#1a1a2e');
+    this.add.text(400, 200, 'Game Over', { fontSize: '48px', fill: '#ff6b6b', fontFamily: 'Arial' }).setOrigin(0.5);
+    this.add.text(400, 300, 'You caught ' + data.score + ' stars!', { fontSize: '28px', fill: '#ffd700', fontFamily: 'Arial' }).setOrigin(0.5);
+    this.add.text(400, 400, 'Press SPACE to Play Again', { fontSize: '24px', fill: '#00ff88', fontFamily: 'Arial' }).setOrigin(0.5);
+    this.input.keyboard.once('keydown-SPACE', () => this.scene.start('GameScene'));
+  }
+}
+
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  physics: {
+    default: 'arcade',
+    arcade: { gravity: { y: 0 }, debug: false }
+  },
+  scene: [TitleScene, GameScene, GameOverScene]
+};
+
+const game = new Phaser.Game(config);
+</script>
+</body>
+</html>
