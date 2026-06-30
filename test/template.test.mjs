@@ -4,7 +4,16 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
-const EXPECTED_SKILLS = ["intro", "game", "story", "character", "gallery"];
+const EXPECTED_SKILLS = [
+  "intro",
+  "game",
+  "story",
+  "character",
+  "gallery",
+  "publish",
+  "roblox",
+  "arcade",
+];
 
 // Read once, share across tests
 const claudeMd = readFileSync(join(ROOT, "CLAUDE.md"), "utf-8");
@@ -35,7 +44,14 @@ describe("Scenario: Setting up from template", () => {
 
   it("only known placeholders exist in CLAUDE.md", () => {
     const allPlaceholders = claudeMd.match(/\{\{[A-Z_]+\}\}/g) || [];
-    const known = new Set(["{{KID_NAME}}", "{{INTERESTS}}", "{{FAVORITE_GAMES}}"]);
+    const known = new Set([
+      "{{KID_NAME}}",
+      "{{INTERESTS}}",
+      "{{FAVORITE_GAMES}}",
+      "{{ITCH_USERNAME}}",
+      "{{ROBLOX_USERNAME}}",
+      "{{ARCADE_REPO}}",
+    ]);
     for (const p of allPlaceholders) {
       assert.ok(known.has(p), `Unknown placeholder found: ${p}`);
     }

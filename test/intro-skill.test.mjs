@@ -140,11 +140,16 @@ describe("Intro skill functional: placeholder replacement", () => {
   it("CLAUDE.md template has replaceable placeholders in correct format", () => {
     const claudeMd = readFileSync(join(ROOT, "CLAUDE.md"), "utf-8");
 
-    // Simulate replacement
+    // Simulate replacement. /intro fills the core profile fields; the other
+    // placeholders are filled later by the skills that own them (/publish,
+    // /roblox, /arcade), so include them here to confirm none are orphaned.
     const replaced = claudeMd
       .replace(/\{\{KID_NAME\}\}/g, "Alex")
       .replace(/\{\{INTERESTS\}\}/g, "Minecraft, Fortnite, basketball")
-      .replace(/\{\{FAVORITE_GAMES\}\}/g, "Minecraft, Fortnite");
+      .replace(/\{\{FAVORITE_GAMES\}\}/g, "Minecraft, Fortnite")
+      .replace(/\{\{ITCH_USERNAME\}\}/g, "alex")
+      .replace(/\{\{ROBLOX_USERNAME\}\}/g, "alex")
+      .replace(/\{\{ARCADE_REPO\}\}/g, "https://github.com/grownup/alex-arcade.git");
 
     // Verify no placeholders remain
     assert.ok(

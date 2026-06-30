@@ -12,7 +12,10 @@ Kids type natural language and Claude builds things for them — no coding exper
 | `/game` | Build a playable Phaser.js browser game through guided questions |
 | `/story` | Write a choose-your-own-adventure story as an interactive HTML page |
 | `/character` | Create a custom AI character and chat with it in the terminal |
+| `/roblox` | Build a real Roblox game in Roblox Studio, guided step by step |
 | `/gallery` | See all their creations in a visual gallery page |
+| `/publish` | Put a single game on itch.io so anyone can play it |
+| `/arcade` | Build their own game website with all their games and publish it to GitHub Pages |
 
 ## Quick Start (Uncle Setup Guide)
 
@@ -87,11 +90,16 @@ nephs/
     game/SKILL.md                   # Phaser.js game builder
     story/SKILL.md                  # Choose-your-own-adventure stories
     character/SKILL.md              # AI character creator and role-play
+    roblox/SKILL.md                 # Guided Roblox Studio game builder
     gallery/SKILL.md                # Visual gallery of all creations
+    publish/SKILL.md                # Publish a single game to itch.io
+    arcade/SKILL.md                 # Build & publish the kid's own arcade website
   creations/
     games/                          # Saved game HTML files
     stories/                        # Saved story HTML files
     characters/                     # Saved character profiles (markdown)
+    roblox/                         # Roblox Studio projects (guide + Luau scripts)
+    arcade/                         # The kid's own arcade website (site/ generated)
   gallery/                          # Generated gallery page
   install.sh                        # One-step Mac setup
   uninstall.sh                      # Clean removal
