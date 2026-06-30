@@ -34,7 +34,10 @@ Ask these questions one at a time. Keep it fun and casual — these are kids!
 3. **"Cool! What about sports or other stuff you're into?"**
    - Wait for answer. Combine with games for `{{INTERESTS}}`.
 
-4. *(Optional)* If the conversation feels natural, ask: **"Last one: what should we call your workshop? Or I can just call it [name]'s Workshop."**
+4. *(Optional)* **"Do you play Roblox? What's your Roblox username? It's totally OK if you don't have one — we can add it later."**
+   - This becomes `{{ROBLOX_USERNAME}}`. Clearly skippable — if they don't have one or aren't sure, leave the placeholder as-is so `/roblox` can ask again when they publish. Don't push.
+
+5. *(Optional)* If the conversation feels natural, ask: **"Last one: what should we call your workshop? Or I can just call it [name]'s Workshop."**
    - This is optional — skip if the kid seems eager to start building.
 
 ### Step 3: Update CLAUDE.md with their answers
@@ -44,6 +47,7 @@ Read CLAUDE.md and replace the placeholders using the Edit tool with `replace_al
 1. Replace all instances of `{{KID_NAME}}` with their name
 2. Replace `{{FAVORITE_GAMES}}` with their favorite games (comma-separated)
 3. Replace `{{INTERESTS}}` with ALL their interests combined — games + sports + hobbies (comma-separated)
+4. *(Only if they gave one)* Replace `{{ROBLOX_USERNAME}}` with their Roblox username. If they didn't have one, **leave the placeholder** — `/roblox` will collect it later at publish time.
 
 **Example replacements:**
 - Name: "Alex" → `{{KID_NAME}}` becomes `Alex`
@@ -71,4 +75,4 @@ Keep it short and exciting — they're ready to create!
 - If a kid gives a one-word answer, that's fine — don't push for more
 - If they seem confused, give examples: "Like Minecraft? Fortnite? Roblox?"
 - The uncle might run /intro on the kid's behalf during setup — that's fine, same process
-- After /intro completes, the CLAUDE.md should have zero remaining `{{` placeholders
+- After /intro completes, `{{KID_NAME}}`, `{{FAVORITE_GAMES}}`, and `{{INTERESTS}}` must all be filled in. `{{ROBLOX_USERNAME}}` and `{{ITCH_USERNAME}}` may stay as placeholders — those get collected later by `/roblox` and `/publish` when the kid is ready to share
