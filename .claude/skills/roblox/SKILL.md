@@ -40,7 +40,9 @@ Ask one at a time. Reference the kid's interests from CLAUDE.md to suggest ideas
 
 **If the kid gives an idea with the command** (e.g., `/roblox a lava obby`), skip the questions. Ask at most **1** clarifying question, then start.
 
-**MOST IMPORTANT — shape the idea to what's actually buildable.** Roblox is bigger than a browser game, and a kid is driving Studio by hand. If they ask for something huge ("a massive open world with 100 enemies and trading"), enthusiastically steer them to an achievable **version 1**: "That's awesome — let's start with the obstacle course part and get you running and jumping, then we'll add the rest!" Never say no — say "let's start with…".
+**MOST IMPORTANT — shape the idea to what's actually buildable.** Roblox is bigger than a browser game, and a kid is driving Studio by hand. If they ask for something huge ("a city with cars AND shops AND pets AND a battle arena"), enthusiastically steer them to an achievable **version 1**. Never say no — say "let's start with…".
+
+**When the big idea has several pieces, let the KID pick which one to build first** — it's their game. Offer the pieces back as a quick choice: "That's a ton of cool stuff! We'll build it one piece at a time. Which do you want first — the cars, the shops, the pets, or the battle arena?" Don't silently pick for them.
 
 **Then summarize in one line**, like `/game` does: "OK! We're building a lava obby — jump across platforms, the lava sends you back, reach the gold platform to win. Let's go!"
 
@@ -57,29 +59,35 @@ Set up a home for this game on disk so we never lose our place:
 Give **ONE step at a time.** Hand over a step, wait for the kid to do it and say "done" (or "ok" / "next"), then give the next one. Never dump the whole build at once — that's overwhelming.
 
 Each step is:
-- **A clear Studio action** in plain words, e.g. "In the **Explorer** window on the right, right-click **Workspace** → **Insert Object** → **Part**. A block appears! Click it, and in **Properties** rename it to `Lava`."
+- **A clear Studio action** in plain words, e.g. "In the **Explorer** window on the right, right-click **Workspace** → **Insert Object** → **Part**. A block appears!"
 - **When code is needed**, a short, friendly, commented Luau snippet to paste in — and tell them exactly *where* it goes.
 
 **Always say where each script lives (placement conventions):**
-- **Server logic** (things the game decides — scoring, hazards, win checks) → a `Script` inside **ServerScriptService**
-- **Per-player / on-screen logic** (controls, GUI, things one player sees) → a `LocalScript` inside **StarterPlayer → StarterPlayerScripts**
+- **A behavior for one specific part** (lava that hurts you, a button, a coin) → a `Script` placed **inside that Part** — then the code says `script.Parent` to mean "the part I live in." This is the simplest for touch reactions and needs no hardcoded names.
+- **Game-wide logic** (scoring, timers, win checks across the whole game) → a `Script` in **ServerScriptService**
+- **Per-player / on-screen logic** (controls, GUI, things one player sees) → a `LocalScript` in **StarterPlayer → StarterPlayerScripts**
 - **World objects** (parts, spawns, platforms, models) → **Workspace**
 
-To insert a script: "Right-click **ServerScriptService** → **Insert Object** → **Script**. Double-click it to open, delete what's there, and paste this in:"
+To put a script inside a part: "In the **Explorer**, hover over your part, click the **+**, and pick **Script**. Double-click it to open, delete what's there, and paste this in:"
 
 Keep snippets **short and commented in plain language** so the kid can read along:
 ```lua
--- This makes the Lava part send you back to start when you touch it
-local lava = workspace.Lava
+-- Put this Script INSIDE the lava part. It works for any part it lives in.
+local lava = script.Parent
 
 lava.Touched:Connect(function(otherPart)
-	local human = otherPart.Parent:FindFirstChild("Humanoid")
+	-- Did a player's body touch us? Every player has a "Humanoid".
+	local human = otherPart.Parent:FindFirstChildWhichIsA("Humanoid")
 	if human then
-		human.Health = 0  -- resets the player to the last checkpoint
+		human.Health = 0  -- sends the player back to their spawn point
 	end
 end)
 ```
 Save each snippet to `scripts/` as you go, and tick the step off in `build-guide.md`.
+
+**Roblox building blocks worth knowing (so steps are correct):**
+- **Spawns & checkpoints** use a **SpawnLocation** part (insert one from the **+** menu). Players respawn at the most recent SpawnLocation they touched — so for an obby, drop a SpawnLocation at the start and more along the way to make checkpoints. `Humanoid.Health = 0` sends them back to that last spawn; without a SpawnLocation they go to the default spawn.
+- Reacting to touch → the part's **`.Touched`** event (as above). Players always have a **Humanoid** inside their character.
 
 After each step, a quick cheer keeps momentum: "Nice, that's working! Next up…"
 
